@@ -1,0 +1,14 @@
+1. State Management & Lifecycle: Bagaimana cara Anda melakukan fetching data di React? Jika Anda menggunakan useEffect, jelaskan bagaimana cara Anda mencegah terjadinya memory leak atau pemanggilan API berulang (infinite loop).
+
+    jawaban: Untuk melakukan fetching data di React, saya biasanya menggunakan hook useEffect untuk memanggil API saat komponen pertama kali dirender. Saya juga menggunakan useState untuk menyimpan data yang diambil dari API. lalu untuk mencegah terjadinya memory leak atau pemanggilan API berulang (infinite loop), saya memastikan bahwa dependency array pada useEffect diisi dengan variabel yang relevan. Jika tidak ada variabel yang perlu dipantau, saya akan menggunakan array kosong [] sebagai dependency, sehingga useEffect hanya akan dijalankan sekali saat komponen dirender pertama kali. Selain itu, saya juga bisa menggunakan cleanup function di dalam useEffect untuk membatalkan permintaan API jika komponen akan di-unmount sebelum permintaan selesai, sehingga mencegah memory leak.
+
+
+2. Struktur Folder: Mengapa Anda menstrukturisasi folder/file seperti yang ada di project Anda saat ini? Jelaskan alasannya.
+
+    jawaban: Saya mengikuti struktur folder yang saya pelajari dari bootcamp yang bertujuan untuk memisahkan komponen, halaman, dan utilitas agar lebih mudah dalam pengelolaan dan pemeliharaan kode. Dengan memisahkan komponen menjadi folder tersendiri, saya dapat dengan mudah menemukan dan mengedit komponen tertentu tanpa harus mencari di seluruh proyek. Halaman (pages) juga dipisahkan untuk memudahkan navigasi dan pengelolaan rute. Selain itu, utilitas atau helper functions ditempatkan di folder terpisah agar dapat digunakan kembali di berbagai bagian aplikasi. Struktur ini membantu menjaga kode tetap bersih, terorganisir, dan mudah dipahami oleh tim pengembang lainnya.
+
+3. Optimasi Kinerja (Performance): Anggaplah API tiba-tiba mengembalikan 10.000 data user sekaligus dan membuat aplikasi lag saat diketik di kolom pencarian. Pendekatan apa (fitur React apa) yang akan Anda gunakan untuk mengatasi lag tersebut?
+
+    jawaban: Untuk mengatasi lag ini, saya akan menggunakan fitur `useDeferredValue` dari React 18. Caranya, state `keyword` tetap diupdate langsung setiap kali user mengetik agar input terasa responsif, sementara nilai yang dipakai untuk proses filtering menggunakan `deferredQuery` hasil dari `useDeferredValue(keyword)`. Dengan begini, React akan menunda proses filtering data yang berat ke waktu senggang dan memprioritaskan update pada input terlebih dahulu, sehingga mengetik tidak pernah terasa nge-drag meskipun sedang memfilter 10.000 data.
+
+    Selain itu, proses filtering dibungkus dengan `useMemo` agar operasi filter hanya dijalankan ulang saat `deferredQuery` atau data `users` benar-benar berubah, bukan setiap kali komponen re-render karena sebab lain. Kombinasi `useDeferredValue` dan `useMemo` ini merupakan solusi native React tanpa perlu library tambahan.
